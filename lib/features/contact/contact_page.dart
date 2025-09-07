@@ -85,22 +85,17 @@ class _ContactPageState extends State<ContactPage> {
             color: Colors.black,
           )).animate(delay: 600.ms).fadeIn(duration: 600.ms).slideY(begin: 0.1),
           const SizedBox(height: 16),
-          Center(
-            child: FilledButton.icon(
-              onPressed: () {
-                // TODO: Add CV download functionality
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('CV download coming soon!')),
-                );
-              },
-              icon: const Icon(Icons.download),
-              label: const Text('Download Full CV'),
-              style: FilledButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-            ).animate(delay: 700.ms).fadeIn(duration: 600.ms).slideY(begin: 0.1),
-          ),
+                  Center(
+                    child: FilledButton.icon(
+                      onPressed: () => _downloadCV(),
+                      icon: const Icon(Icons.download),
+                      label: const Text('Download Full CV'),
+                      style: FilledButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                    ).animate(delay: 700.ms).fadeIn(duration: 600.ms).slideY(begin: 0.1),
+                  ),
           
           const SizedBox(height: 48),
         ],
@@ -231,6 +226,35 @@ class _ContactPageState extends State<ContactPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Could not open GitHub')),
       );
+    }
+  }
+
+  Future<void> _downloadCV() async {
+    try {
+      // For web, we'll open the CV in a new tab
+      final url = Uri.parse('assets/files/Mazen\'s CV F.pdf');
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+      } else {
+        // Fallback: show a message
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('CV will open in a new tab. If it doesn\'t, please check your browser settings.'),
+              duration: Duration(seconds: 3),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error opening CV: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 }

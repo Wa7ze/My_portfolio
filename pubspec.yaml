@@ -83,6 +83,10 @@ flutter:
     - assets/images/eary-woods-game/1.png
     - assets/images/eary-woods-game/2.png
     - assets/images/eary-woods-game/3.png
+    - assets/images/portfoilo-website/image.png
+    - assets/images/portfoilo-website/image copy.png
+    - assets/images/portfoilo-website/image copy 2.png
+    - assets/files/Mazen's CV F.pdf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

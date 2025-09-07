@@ -22,6 +22,13 @@ class WorkItem {
 
 // Helper function to get local image paths
 List<String> getProjectImages(String projectSlug) {
+  if (projectSlug == 'portfoilo-website') {
+    return [
+      'assets/images/portfoilo-website/image.png',
+      'assets/images/portfoilo-website/image copy.png',
+      'assets/images/portfoilo-website/image copy 2.png',
+    ];
+  }
   return [
     'assets/images/$projectSlug/1.png',
     'assets/images/$projectSlug/2.png',
@@ -33,7 +40,7 @@ final workItems = <WorkItem>[
   WorkItem(
     slug: 'portfolio-website',
     title: 'Portfolio Website',
-    imageUrl: 'assets/images/portfoilo-website/1.png',
+    imageUrl: 'assets/images/portfoilo-website/image copy 2.png',
     summary: 'A responsive Flutter web portfolio showcasing my skills, projects, and professional journey with smooth animations and modern design.',
     tags: ['Flutter', 'Web', 'Animation', 'Responsive Design'],
     githubUrl: 'https://github.com/Wa7ze/mazen_portfolio',
