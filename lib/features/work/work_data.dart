@@ -43,7 +43,7 @@ final workItems = <WorkItem>[
     imageUrl: 'assets/images/portfoilo-website/image copy 2.png',
     summary: 'A responsive Flutter web portfolio showcasing my skills, projects, and professional journey with smooth animations and modern design.',
     tags: ['Flutter', 'Web', 'Animation', 'Responsive Design'],
-    githubUrl: 'https://github.com/Wa7ze/mazen_portfolio',
+    githubUrl: 'https://github.com/Wa7ze/My_portfolio',
     galleryImages: getProjectImages('portfoilo-website'),
     overview: 'This portfolio website represents my journey as a software engineer, built entirely with Flutter for web. It features a modern, responsive design with smooth animations and interactive elements. The site showcases my projects, skills, and professional experience in an engaging way. Built with a focus on performance and user experience, it demonstrates my expertise in Flutter development and modern web technologies.',
   ),
