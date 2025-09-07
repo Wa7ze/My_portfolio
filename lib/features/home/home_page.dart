@@ -147,7 +147,7 @@ class HomePage extends StatelessWidget {
                     const SizedBox(height: 16),
                     
                     Text(
-                      'I have strong communication skills and excel at handling various situations. I\'m open to full-time positions, part-time opportunities, or traineeships in any software-related field, as I love coding in general and haven\'t decided on a specific specialization yet.',
+                      'I have strong communication skills and excel at handling various situations. I\'m open to full-time positions, part-time opportunities, or traineeships in Web development, App devolepment or Game development opportunities.',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         height: 1.6,
                         color: Colors.black87,
