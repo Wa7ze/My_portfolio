@@ -14,7 +14,7 @@ class RevealOnScroll extends StatelessWidget {
     if (reduce) return child;
 
     return child
-        .animate(adapter: ScrollAdapter(context as ScrollController))
+        .animate()
         .fadeIn(duration: 450.ms, delay: delay, curve: Curves.easeOutCubic)
         .slide(begin: const Offset(0, .08), curve: Curves.easeOutCubic);
   }
