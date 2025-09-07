@@ -23,9 +23,9 @@ class WorkItem {
 // Helper function to get local image paths
 List<String> getProjectImages(String projectSlug) {
   return [
-    'images/$projectSlug/1.png',
-    'images/$projectSlug/2.png',
-    'images/$projectSlug/3.png',
+    'assets/images/$projectSlug/1.png',
+    'assets/images/$projectSlug/2.png',
+    'assets/images/$projectSlug/3.png',
   ];
 }
 
@@ -33,7 +33,7 @@ final workItems = <WorkItem>[
   WorkItem(
     slug: 'portfolio-website',
     title: 'Portfolio Website',
-    imageUrl: 'images/portfoilo-website/1.png',
+    imageUrl: 'assets/images/portfoilo-website/1.png',
     summary: 'A responsive Flutter web portfolio showcasing my skills, projects, and professional journey with smooth animations and modern design.',
     tags: ['Flutter', 'Web', 'Animation', 'Responsive Design'],
     githubUrl: 'https://github.com/Wa7ze/mazen_portfolio',
@@ -43,7 +43,7 @@ final workItems = <WorkItem>[
   WorkItem(
     slug: 'outfitly-app',
     title: 'Outfitly App',
-    imageUrl: 'images/outfitly-app/1.png',
+    imageUrl: 'assets/images/outfitly-app/1.png',
     summary: 'AI-powered fashion companion that revolutionizes wardrobe management with smart outfit recommendations and real-time style feedback.',
     tags: ['Flutter', 'AI/ML', 'TensorFlow', 'Mobile App'],
     githubUrl: 'https://github.com/Wa7ze/outfitly-3',
@@ -53,7 +53,7 @@ final workItems = <WorkItem>[
   WorkItem(
     slug: 'nutritrack-website',
     title: 'Nutritrack Website',
-    imageUrl: 'images/nutritrack-website/1.png',
+    imageUrl: 'assets/images/nutritrack-website/1.png',
     summary: 'Social-based nutrition tracking website built with Django, featuring user authentication, meal logging, and community features.',
     tags: ['Python', 'Django', 'MySQL', 'Social Features'],
     githubUrl: 'https://github.com/Wa7ze/nutritrack',
@@ -63,7 +63,7 @@ final workItems = <WorkItem>[
   WorkItem(
     slug: 'clubconnect-website',
     title: 'ClubConnect Website',
-    imageUrl: 'images/clubconnect-website/1.png',
+    imageUrl: 'assets/images/clubconnect-website/1.png',
     summary: 'Platform designed to simplify access to member benefits, offering movie ticketing, fuel discounts, and exclusive member offers.',
     tags: ['Web Development', 'Member Management', 'E-commerce'],
     githubUrl: 'https://github.com/Wa7ze/clubconnect',
@@ -73,7 +73,7 @@ final workItems = <WorkItem>[
   WorkItem(
     slug: 'eary-woods-game',
     title: 'Eary Woods Game',
-    imageUrl: 'images/eary-woods-game/1.png',
+    imageUrl: 'assets/images/eary-woods-game/1.png',
     summary: 'Horror roll-a-ball game developed in Unity with custom enemy AI, input controls, and immersive gameplay mechanics.',
     tags: ['Unity', 'C#', 'Game Development', 'AI'],
     githubUrl: 'https://github.com/Wa7ze/eary-woods',

@@ -71,7 +71,18 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/
+    - assets/images/outfitly-app/1.png
+    - assets/images/outfitly-app/2.png
+    - assets/images/outfitly-app/3.png
+    - assets/images/nutritrack-website/1.png
+    - assets/images/nutritrack-website/2.png
+    - assets/images/nutritrack-website/3.png
+    - assets/images/clubconnect-website/1.png
+    - assets/images/clubconnect-website/2.png
+    - assets/images/clubconnect-website/3.png
+    - assets/images/eary-woods-game/1.png
+    - assets/images/eary-woods-game/2.png
+    - assets/images/eary-woods-game/3.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
