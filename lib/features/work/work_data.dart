@@ -9,10 +9,10 @@ class WorkItem {
   final String overview;
 
   WorkItem({
-    required this.slug, 
-    required this.title, 
-    required this.imageUrl, 
-    required this.summary, 
+    required this.slug,
+    required this.title,
+    required this.imageUrl,
+    required this.summary,
     required this.tags,
     required this.githubUrl,
     required this.galleryImages,
@@ -29,6 +29,14 @@ List<String> getProjectImages(String projectSlug) {
       'assets/images/portfoilo-website/image copy 2.png',
     ];
   }
+  if (projectSlug == 'helpdesk-system') {
+    return [
+      'assets/images/helpdesk-system/1.png',
+      'assets/images/helpdesk-system/2.png',
+      'assets/images/helpdesk-system/3.png',
+      'assets/images/helpdesk-system/4.png',
+    ];
+  }
   return [
     'assets/images/$projectSlug/1.png',
     'assets/images/$projectSlug/2.png',
@@ -38,53 +46,104 @@ List<String> getProjectImages(String projectSlug) {
 
 final workItems = <WorkItem>[
   WorkItem(
+    slug: 'helpdesk-system',
+    title: 'Helpdesk & Inventory Management System',
+    imageUrl: 'assets/images/helpdesk-system/2.png',
+    summary: 'Production FastAPI + React helpdesk and inventory platform serving ~300 daily users, with ticket '
+        'approval workflows, device inventory, and activity tracking, built and shipped solo end-to-end.',
+    tags: ['Python', 'FastAPI', 'PostgreSQL', 'React', 'TypeScript'],
+    githubUrl: 'https://github.com/Wa7ze',
+    galleryImages: getProjectImages('helpdesk-system'),
+    overview: 'An independent, full-stack helpdesk and inventory system used daily by roughly 300 employees at a real '
+        'company. The backend is built with Python and FastAPI on PostgreSQL, exposing a REST API for ticketing, '
+        'device/inventory records, and role-based access control, deployed on Render; the frontend is a React + '
+        'TypeScript SPA deployed on Netlify. The ticketing module supports full approval workflows (create, edit, '
+        'close, and approve requests), the inventory module tracks devices with bulk Excel import, and an activity '
+        'log records changes across the system for auditability. This project demonstrates end-to-end ownership of a '
+        'production system: API design, relational data modeling, authentication, deployment, and a responsive UI — '
+        'all shipped and actively used, not just a demo.',
+  ),
+  WorkItem(
     slug: 'portfolio-website',
     title: 'Portfolio Website',
     imageUrl: 'assets/images/portfoilo-website/image copy 2.png',
-    summary: 'A responsive Flutter web portfolio showcasing my skills, projects, and professional journey with smooth animations and modern design.',
-    tags: ['Flutter', 'Web', 'Animation', 'Responsive Design'],
+    summary: 'This site: a responsive Flutter web app with a theme system (dark/light), full Arabic/English i18n '
+        'with RTL support, and choreographed motion built on Flutter\'s animation and custom-painting APIs.',
+    tags: ['Flutter', 'Dart', 'i18n / RTL', 'Custom Animation', 'Responsive Design'],
     githubUrl: 'https://github.com/Wa7ze/My_portfolio',
     galleryImages: getProjectImages('portfoilo-website'),
-    overview: 'This portfolio website represents my journey as a software engineer, built entirely with Flutter for web. It features a modern, responsive design with smooth animations and interactive elements. The site showcases my projects, skills, and professional experience in an engaging way. Built with a focus on performance and user experience, it demonstrates my expertise in Flutter development and modern web technologies.',
+    overview: 'My portfolio, built entirely in Flutter for web rather than a templated site builder. It implements a '
+        'shared light/dark ThemeData pair with a custom ThemeExtension for palette tokens, a hand-rolled Arabic/'
+        'English localization layer that drives Flutter\'s Directionality so the entire layout mirrors correctly in '
+        'RTL, a Provider-based state layer for theme/locale/navigation state, and a CustomPainter-driven opening '
+        'animation. The floating, hamburger-triggered sidebar, staggered scroll-reveal animations, and responsive '
+        'grid layouts across every page are all hand-built. The project is a practical showcase of Flutter web '
+        'architecture: state management, custom painting, internationalization, and motion design working together.',
   ),
   WorkItem(
     slug: 'outfitly-app',
     title: 'Outfitly App',
     imageUrl: 'assets/images/outfitly-app/1.png',
-    summary: 'AI-powered fashion companion that revolutionizes wardrobe management with smart outfit recommendations and real-time style feedback.',
-    tags: ['Flutter', 'AI/ML', 'TensorFlow', 'Mobile App'],
+    summary: 'Cross-platform Flutter wardrobe app with a Django + TensorFlow recommendation backend — my graduation '
+        'project, covering mobile UI, API integration, and applied ML end-to-end.',
+    tags: ['Flutter', 'Django', 'TensorFlow', 'REST API', 'Mobile App'],
     githubUrl: 'https://github.com/Wa7ze/outfitly-3',
     galleryImages: getProjectImages('outfitly-app'),
-    overview: 'Outfitly is my graduation project - an innovative AI-powered fashion companion that transforms how people manage their wardrobes. The app uses machine learning algorithms to analyze clothing items and generate personalized outfit recommendations. Built with Flutter for cross-platform compatibility and integrated with TensorFlow for AI capabilities, it provides users with real-time style feedback and smart wardrobe organization. The project demonstrates my expertise in mobile development, AI integration, and user experience design.',
+    overview: 'Outfitly is my graduation project: an AI-powered wardrobe companion split cleanly between a Flutter '
+        'cross-platform client and a Django + TensorFlow backend. The Flutter app handles the digital wardrobe, '
+        'outfit planner, and social feed, communicating with the backend over a REST API; the backend uses '
+        'TensorFlow models to analyze clothing items and generate personalized outfit recommendations. Building it '
+        'meant working across the whole stack — mobile UI/UX in Flutter, API contract design, and integrating a '
+        'trained ML model into a real product — which is what made it the strongest demonstration of my range as an '
+        'engineer during my degree.',
   ),
   WorkItem(
     slug: 'nutritrack-website',
     title: 'Nutritrack Website',
     imageUrl: 'assets/images/nutritrack-website/1.png',
-    summary: 'Social-based nutrition tracking website built with Django, featuring user authentication, meal logging, and community features.',
-    tags: ['Python', 'Django', 'MySQL', 'Social Features'],
+    summary: 'Django-based social nutrition tracker (~65% individual contribution) — built the authentication system '
+        'and validated it with Selenium functional tests and JMeter load tests.',
+    tags: ['Python', 'Django', 'SQLite', 'Selenium', 'JMeter'],
     githubUrl: 'https://github.com/Wa7ze/nutritrack',
     galleryImages: getProjectImages('nutritrack-website'),
-    overview: 'Nutritrack is a comprehensive social nutrition tracking platform that combines health monitoring with community engagement. Built using Django and Python, the website features robust user authentication, detailed meal logging, and social sharing capabilities. I implemented the login/logout system and comprehensive testing using Eclipse and Apache JMeter. The platform allows users to track their nutritional intake, share meals with the community, and receive personalized health insights. This project showcases my backend development skills and understanding of social web applications.',
+    overview: 'NutriTrack is a social nutrition-tracking platform built with Django, HTML, and SQLite, where I owned '
+        'roughly 65% of the project. My core contribution was the authentication and account system — signup, login, '
+        'profile management, and follow/unfollow logic — plus the meal-posting and search features that sit on top '
+        'of it. I also designed and ran the test suite: functional test cases in Selenium to verify user flows end '
+        'to end, and load/performance testing with Apache JMeter to check the app under concurrent traffic. This '
+        'project reflects both backend ownership and a QA mindset — building the feature and proving it works under '
+        'load, not just that it compiles.',
   ),
   WorkItem(
     slug: 'clubconnect-website',
     title: 'ClubConnect Website',
     imageUrl: 'assets/images/clubconnect-website/1.png',
-    summary: 'Platform designed to simplify access to member benefits, offering movie ticketing, fuel discounts, and exclusive member offers.',
-    tags: ['Web Development', 'Member Management', 'E-commerce'],
+    summary: 'Full-stack member benefits platform — account management, benefit redemption, and an admin-facing '
+        'backend for a member offers program (ticketing, fuel discounts, parking).',
+    tags: ['Full-Stack Web', 'Database Design', 'Member Management'],
     githubUrl: 'https://github.com/Wa7ze/clubconnect',
     galleryImages: getProjectImages('clubconnect-website'),
-    overview: 'ClubConnect is a comprehensive member benefits platform designed to streamline access to exclusive offers and services. The website provides members with easy access to movie ticketing, fuel discounts, car parking, and various other benefits. Built with modern web technologies, it features an intuitive user interface and robust backend systems for managing member accounts and benefit distribution. The platform enhances member engagement by providing a centralized hub for all club-related services and exclusive offers. This project demonstrates my skills in full-stack web development and user experience optimization.',
+    overview: 'ClubConnect is a member-benefits platform that centralizes access to movie ticketing, fuel discounts, '
+        'parking, and other exclusive offers behind a single member account system. I designed the data model for '
+        'members and benefit entitlements, built the backend logic for account management and benefit redemption, '
+        "and implemented the front-end views members use to browse and claim offers. The project's focus was on "
+        'clean relational data design and a straightforward, reliable user flow — the parts of full-stack '
+        'development that matter most for a real membership product, rather than a purely visual exercise.',
   ),
   WorkItem(
     slug: 'eary-woods-game',
     title: 'Eary Woods Game',
     imageUrl: 'assets/images/eary-woods-game/1.png',
-    summary: 'Horror roll-a-ball game developed in Unity with custom enemy AI, input controls, and immersive gameplay mechanics.',
-    tags: ['Unity', 'C#', 'Game Development', 'AI'],
+    summary: 'Unity horror roll-a-ball game — wrote the C# gameplay systems: player movement/physics, enemy AI '
+        'behavior, and level scripting.',
+    tags: ['Unity', 'C#', 'Game AI', 'Physics'],
     githubUrl: 'https://github.com/Wa7ze/eary-woods',
     galleryImages: getProjectImages('eary-woods-game'),
-    overview: 'Eary Woods is a thrilling horror roll-a-ball game that showcases my game development skills and creativity. Developed in Unity using C#, this project features custom enemy AI systems, responsive input controls, and immersive gameplay mechanics. I was responsible for coding most of the game logic, including player movement, enemy behavior, and level design modifications. The game creates an atmospheric horror experience with challenging gameplay and engaging mechanics. This project demonstrates my proficiency in Unity development, C# programming, and game design principles, highlighting my ability to create engaging interactive experiences.',
+    overview: 'Eary Woods is a horror-themed roll-a-ball game built in Unity, where I was responsible for coding '
+        'most of the core gameplay in C#: physics-driven player movement and input handling, an enemy AI state '
+        'system that drives chase/patrol behavior to create tension, and scripted level logic and triggers. Beyond '
+        'gameplay code, I worked on level design adjustments to pace the horror atmosphere correctly. The project is '
+        'a concrete demonstration of applied game-engine programming — physics, AI state machines, and player-facing '
+        'game feel — rather than just using pre-built Unity assets.',
   ),
 ];

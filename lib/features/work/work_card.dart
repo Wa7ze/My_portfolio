@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/theme.dart';
 import 'work_data.dart';
 
 class WorkCard extends StatefulWidget {
@@ -24,15 +25,15 @@ class _WorkCardState extends State<WorkCard> with SingleTickerProviderStateMixin
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    
+
     _scaleAnimation = Tween<double>(begin: 1.0, end: 1.05).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
     );
-    
+
     _elevationAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
     );
-    
+
     _translateAnimation = Tween<Offset>(begin: Offset.zero, end: const Offset(0, -0.02)).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
     );
@@ -55,6 +56,7 @@ class _WorkCardState extends State<WorkCard> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return MouseRegion(
       onEnter: (_) => _onHover(true),
       onExit: (_) => _onHover(false),
@@ -74,7 +76,7 @@ class _WorkCardState extends State<WorkCard> with SingleTickerProviderStateMixin
                             blurRadius: 20 * _elevationAnimation.value,
                             spreadRadius: -4 * _elevationAnimation.value,
                             offset: Offset(0, 8 * _elevationAnimation.value),
-                            color: Colors.black.withOpacity(0.15 * _elevationAnimation.value),
+                            color: Colors.black.withOpacity(0.35 * _elevationAnimation.value),
                           ),
                         ]
                       : [],
@@ -84,8 +86,7 @@ class _WorkCardState extends State<WorkCard> with SingleTickerProviderStateMixin
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      _buildImage(widget.item.imageUrl),
-                      // Gradient overlay
+                      _buildImage(context, widget.item.imageUrl),
                       Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
@@ -93,16 +94,15 @@ class _WorkCardState extends State<WorkCard> with SingleTickerProviderStateMixin
                             end: Alignment.bottomCenter,
                             colors: [
                               Colors.transparent,
-                              Colors.black.withOpacity(0.3),
-                              Colors.black.withOpacity(0.7),
+                              Colors.black.withOpacity(0.35),
+                              Colors.black.withOpacity(0.78),
                             ],
                             stops: const [0.0, 0.6, 1.0],
                           ),
                         ),
                       ),
-                      // Content
                       Align(
-                        alignment: Alignment.bottomLeft,
+                        alignment: AlignmentDirectional.bottomStart,
                         child: Padding(
                           padding: const EdgeInsets.all(20),
                           child: Column(
@@ -111,20 +111,12 @@ class _WorkCardState extends State<WorkCard> with SingleTickerProviderStateMixin
                             children: [
                               Text(
                                 widget.item.title,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                                style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
                               ),
                               const SizedBox(height: 8),
                               Text(
                                 widget.item.summary,
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.9),
-                                  fontSize: 14,
-                                  height: 1.3,
-                                ),
+                                style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 14, height: 1.3),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -142,11 +134,7 @@ class _WorkCardState extends State<WorkCard> with SingleTickerProviderStateMixin
                                     ),
                                     child: Text(
                                       tag,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                                      style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
                                     ),
                                   );
                                 }).toList(),
@@ -155,15 +143,13 @@ class _WorkCardState extends State<WorkCard> with SingleTickerProviderStateMixin
                           ),
                         ),
                       ),
-                      // Hover overlay
                       if (_hover)
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xFF6B9BD2).withOpacity(0.1),
+                            color: theme.colorScheme.primary.withOpacity(0.12),
                             borderRadius: BorderRadius.circular(20),
                           ),
                         ),
-                      // Tap area
                       Material(
                         type: MaterialType.transparency,
                         child: InkWell(
@@ -181,31 +167,22 @@ class _WorkCardState extends State<WorkCard> with SingleTickerProviderStateMixin
       ),
     );
   }
-  
-  Widget _buildImage(String imagePath) {
-    // Check if it's a local asset or network URL
-    if (imagePath.startsWith('images/') || imagePath.startsWith('assets/')) {
-      return Image.asset(
-        imagePath,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return Container(
-            color: Colors.grey[300],
-            child: const Icon(Icons.image, size: 50, color: Colors.grey),
-          );
-        },
-      );
-    } else {
-      return Image.network(
-        imagePath,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return Container(
-            color: Colors.grey[300],
-            child: const Icon(Icons.image, size: 50, color: Colors.grey),
-          );
-        },
-      );
-    }
+
+  Widget _buildImage(BuildContext context, String imagePath) {
+    if (imagePath.isEmpty) return _placeholder(context);
+    return Image.asset(
+      imagePath,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) => _placeholder(context),
+    );
+  }
+
+  Widget _placeholder(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      color: context.palette.cardBackground,
+      alignment: Alignment.center,
+      child: Icon(Icons.image_outlined, size: 48, color: theme.colorScheme.primary.withOpacity(0.6)),
+    );
   }
 }

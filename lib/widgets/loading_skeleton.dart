@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import '../core/theme.dart';
 
 class LoadingSkeleton extends StatelessWidget {
   final double? width;
   final double? height;
   final BorderRadius? borderRadius;
-  
+
   const LoadingSkeleton({
     super.key,
     this.width,
@@ -15,15 +16,16 @@ class LoadingSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
     return Container(
       width: width,
       height: height ?? 20,
       decoration: BoxDecoration(
-        color: Colors.grey[300],
+        color: palette.skeletonBase,
         borderRadius: borderRadius ?? BorderRadius.circular(4),
       ),
     ).animate(onPlay: (controller) => controller.repeat())
-        .shimmer(duration: 1500.ms, color: Colors.grey[400]!)
+        .shimmer(duration: 1500.ms, color: palette.skeletonHighlight)
         .fadeIn(duration: 300.ms);
   }
 }
@@ -36,7 +38,7 @@ class WorkCardSkeleton extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: Colors.grey[100],
+        color: context.palette.cardBackground,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
