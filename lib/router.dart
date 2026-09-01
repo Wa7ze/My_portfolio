@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'features/home/home_page.dart';
 import 'features/work/work_page.dart';
 import 'features/work/project_page.dart';
-import 'features/about/about_page.dart';
 import 'features/contact/contact_page.dart';
 
 final router = GoRouter(
@@ -60,21 +59,11 @@ final router = GoRouter(
         );
       },
     ),
+    // About's content now lives on Home; redirect old links there instead
+    // of 404ing.
     GoRoute(
       path: '/about',
-      name: 'about',
-      pageBuilder: (ctx, st) => CustomTransitionPage(
-        child: const AboutPage(),
-        transitionsBuilder: (ctx, anim, sec, child) => FadeTransition(
-          opacity: CurvedAnimation(parent: anim, curve: Curves.easeInOut),
-          child: SlideTransition(
-            position: Tween(begin: const Offset(0, 0.1), end: Offset.zero)
-                .chain(CurveTween(curve: Curves.easeOutCubic))
-                .animate(anim),
-            child: child,
-          ),
-        ),
-      ),
+      redirect: (context, state) => '/',
     ),
     GoRoute(
       path: '/contact',

@@ -48,3 +48,19 @@ class SidebarController extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+/// Tracks which page is active so app-root-level widgets (the cosmic
+/// background, the sidebar) can react to navigation without living inside
+/// the per-page widget tree themselves — if they did, go_router would
+/// destroy and recreate their State on every navigation, losing whatever
+/// animation was mid-flight.
+class CurrentPageController extends ChangeNotifier {
+  String _page = 'home';
+  String get page => _page;
+
+  void setPage(String page) {
+    if (_page == page) return;
+    _page = page;
+    notifyListeners();
+  }
+}

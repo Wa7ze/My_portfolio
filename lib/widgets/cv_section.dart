@@ -68,7 +68,10 @@ class _CvDialog extends StatelessWidget {
   const _CvDialog();
 
   Future<void> _download() async {
-    final uri = Uri.parse(_kCvPdfAsset);
+    // Flutter's web build serves pubspec assets under an extra `assets/`
+    // prefix (e.g. assets/files/x.pdf -> /assets/assets/files/x.pdf), and
+    // Uri.base.resolve keeps this correct regardless of the deployed path.
+    final uri = Uri.base.resolve('assets/$_kCvPdfAsset');
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }

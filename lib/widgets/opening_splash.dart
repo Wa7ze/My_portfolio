@@ -30,7 +30,15 @@ class _OpeningSplashState extends State<OpeningSplash> with SingleTickerProvider
     if (reduceMotion) {
       _visible = false;
     } else {
-      _controller.forward();
+      // Deferred to after the first frame: starting a Ticker-driven
+      // animation synchronously inside initState can occasionally race
+      // with the engine's first paint on web (especially on a cold load),
+      // silently dropping the animation. Waiting for the post-frame
+      // callback guarantees the widget tree is actually up before the
+      // Ticker starts.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _controller.forward();
+      });
       _controller.addStatusListener((status) {
         if (status == AnimationStatus.completed && mounted) {
           setState(() => _visible = false);

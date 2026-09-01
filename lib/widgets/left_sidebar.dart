@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../core/app_state.dart';
 import '../core/planet_theme.dart';
 import '../core/strings/app_strings.dart';
+import '../router.dart';
+import 'planet_dot.dart';
 
 class LeftSidebar extends StatelessWidget {
   final String currentPage;
@@ -18,9 +19,13 @@ class LeftSidebar extends StatelessWidget {
     final themeController = context.watch<ThemeController>();
     final localeController = context.watch<LocaleController>();
 
+    // AppChrome (and this sidebar within it) lives as a sibling to the
+    // routed content in the Stack, not a descendant of the Router — so
+    // context.go() can't find GoRouter's InheritedWidget from here.
+    // Calling the router instance directly sidesteps that entirely.
     void navigate(String path) {
       sidebar.close();
-      context.go(path);
+      router.go(path);
     }
 
     return Material(
@@ -57,7 +62,6 @@ class LeftSidebar extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   _NavItem(label: strings.navHome, planetKey: 'home', isActive: currentPage == 'home', onTap: () => navigate('/')),
-                  _NavItem(label: strings.navAbout, planetKey: 'about', isActive: currentPage == 'about', onTap: () => navigate('/about')),
                   _NavItem(label: strings.navWork, planetKey: 'work', isActive: currentPage == 'work', onTap: () => navigate('/work')),
                   _NavItem(label: strings.navContact, planetKey: 'contact', isActive: currentPage == 'contact', onTap: () => navigate('/contact')),
                 ],
@@ -203,7 +207,7 @@ class _NavItemState extends State<_NavItem> {
           ),
           child: Row(
             children: [
-              _PlanetDot(color: accent, hasRing: planet.hasRing),
+              PlanetDot(color: accent, hasRing: planet.hasRing),
               const SizedBox(width: 10),
               Text(
                 widget.label,
@@ -218,51 +222,4 @@ class _NavItemState extends State<_NavItem> {
       ),
     );
   }
-}
-
-/// Small planet symbol next to each nav item, matching the planet assigned
-/// to that page in the cosmic background.
-class _PlanetDot extends StatelessWidget {
-  final Color color;
-  final bool hasRing;
-  const _PlanetDot({required this.color, required this.hasRing});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 16,
-      height: 16,
-      child: CustomPaint(painter: _PlanetDotPainter(color: color, hasRing: hasRing)),
-    );
-  }
-}
-
-class _PlanetDotPainter extends CustomPainter {
-  final Color color;
-  final bool hasRing;
-  _PlanetDotPainter({required this.color, required this.hasRing});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = size.center(Offset.zero);
-    if (hasRing) {
-      final ringPaint = Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.2
-        ..color = color.withOpacity(0.7);
-      canvas.save();
-      canvas.translate(center.dx, center.dy);
-      canvas.rotate(0.5);
-      canvas.drawOval(Rect.fromCenter(center: Offset.zero, width: size.width * 1.15, height: size.height * 0.42), ringPaint);
-      canvas.restore();
-    }
-    final corePaint = Paint()
-      ..shader = RadialGradient(colors: [color, color.withOpacity(0.55)])
-          .createShader(Rect.fromCircle(center: center, radius: size.width * 0.34));
-    canvas.drawCircle(center, size.width * 0.34, corePaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant _PlanetDotPainter oldDelegate) =>
-      oldDelegate.color != color || oldDelegate.hasRing != hasRing;
 }

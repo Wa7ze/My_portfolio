@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'core/app_state.dart';
 import 'core/theme.dart';
 import 'router.dart';
+import 'widgets/app_chrome.dart';
 import 'widgets/opening_splash.dart';
 
 class App extends StatelessWidget {
@@ -28,7 +29,11 @@ class App extends StatelessWidget {
       ],
       routerConfig: router,
       debugShowCheckedModeBanner: false,
-      builder: (context, child) => OpeningSplash(child: child ?? const SizedBox.shrink()),
+      builder: (context, child) => SelectionArea(
+        child: OpeningSplash(
+          child: AppChrome(child: child ?? const SizedBox.shrink()),
+        ),
+      ),
     );
   }
 }

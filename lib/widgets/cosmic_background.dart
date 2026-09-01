@@ -5,13 +5,14 @@ import '../core/app_state.dart';
 import '../core/planet_theme.dart';
 
 /// A quiet, ever-so-slowly drifting made-up solar system that sits behind
-/// every page: a sun (a black hole in dark mode) and four invented planets,
-/// one permanently assigned to each page. The planets and sun don't move
-/// relative to each other — instead, switching pages pans/rotates the
-/// "camera" around the fixed configuration, so the active page's planet
-/// swings into view while everything else (including the sun) drifts to
-/// new apparent positions as a side effect, the same way a fixed star
-/// field looks different depending on which way you're facing.
+/// every page: a sun (a black hole in dark mode) and three invented
+/// planets, one permanently assigned to each page. The planets and sun
+/// don't move relative to each other — instead, switching pages both pans
+/// the "camera" around the fixed configuration AND gives it a quick,
+/// smooth dolly-in toward the destination planet, like flying toward it,
+/// so the sun/black hole and the other planets visibly relocate as a side
+/// effect, the same way a fixed star field looks different depending on
+/// which way you're facing (and how close you've moved).
 class CosmicBackground extends StatefulWidget {
   final String currentPage;
   const CosmicBackground({super.key, required this.currentPage});
@@ -20,7 +21,7 @@ class CosmicBackground extends StatefulWidget {
   State<CosmicBackground> createState() => _CosmicBackgroundState();
 }
 
-// Focus angle: where the active page's planet lands on screen once the
+// Focus point: where the active page's planet lands on screen once the
 // camera settles (radians; 0 = due "east"/right in canvas terms).
 const _focusAngle = -0.35;
 
@@ -30,6 +31,7 @@ class _CosmicBackgroundState extends State<CosmicBackground> with TickerProvider
   late final AnimationController _cameraController;
   double _cameraStart = 0;
   double _cameraDelta = 0;
+  double _focusRadiusFrac = 0.30;
   bool? _lastIsDark;
   String? _lastPage;
 
@@ -42,9 +44,10 @@ class _CosmicBackgroundState extends State<CosmicBackground> with TickerProvider
     super.initState();
     _idleController = AnimationController(vsync: this, duration: const Duration(minutes: 6))..repeat();
     _sunController = AnimationController(vsync: this, duration: const Duration(milliseconds: 2000));
-    _cameraController = AnimationController(vsync: this, duration: const Duration(milliseconds: 850));
+    _cameraController = AnimationController(vsync: this, duration: const Duration(milliseconds: 950));
     _planetKeys = kPlanetAngles.keys.toList();
     _cameraStart = _targetCameraAngle(widget.currentPage);
+    _focusRadiusFrac = _CosmicPainter.radiusFrac[widget.currentPage] ?? 0.30;
 
     final rnd = Random(7);
     _stars = List.generate(90, (_) => Offset(rnd.nextDouble(), rnd.nextDouble()));
@@ -93,6 +96,7 @@ class _CosmicBackgroundState extends State<CosmicBackground> with TickerProvider
         final from = _currentCameraAngle;
         _cameraStart = from;
         _cameraDelta = _shortestDelta(from, target);
+        _focusRadiusFrac = _CosmicPainter.radiusFrac[widget.currentPage] ?? 0.30;
         _cameraController.forward(from: 0);
       }
       _lastPage = widget.currentPage;
@@ -103,11 +107,14 @@ class _CosmicBackgroundState extends State<CosmicBackground> with TickerProvider
         child: AnimatedBuilder(
           animation: Listenable.merge([_idleController, _sunController, _cameraController]),
           builder: (context, _) {
+            final flyT = sin(pi * _cameraController.value.clamp(0.0, 1.0));
             return CustomPaint(
               painter: _CosmicPainter(
                 idleT: _idleController.value,
                 sunT: _sunController.value,
                 cameraAngle: _currentCameraAngle,
+                flyT: flyT,
+                focusRadiusFrac: _focusRadiusFrac,
                 planetKeys: _planetKeys,
                 stars: _stars,
                 starPhase: _starPhase,
@@ -125,6 +132,8 @@ class _CosmicPainter extends CustomPainter {
   final double idleT;
   final double sunT;
   final double cameraAngle;
+  final double flyT;
+  final double focusRadiusFrac;
   final List<String> planetKeys;
   final List<Offset> stars;
   final List<double> starPhase;
@@ -133,6 +142,8 @@ class _CosmicPainter extends CustomPainter {
     required this.idleT,
     required this.sunT,
     required this.cameraAngle,
+    required this.flyT,
+    required this.focusRadiusFrac,
     required this.planetKeys,
     required this.stars,
     required this.starPhase,
@@ -141,17 +152,15 @@ class _CosmicPainter extends CustomPainter {
   static const _sunWorldAngle = 5.9;
   static const _sunRadiusFrac = 0.10;
 
-  static const _radiusFrac = <String, double>{
+  static const radiusFrac = <String, double>{
     'home': 0.30,
-    'about': 0.42,
     'work': 0.24,
     'contact': 0.36,
   };
   static const _planetSize = <String, double>{
-    'home': 16,
-    'about': 20,
-    'work': 14,
-    'contact': 18,
+    'home': 17,
+    'work': 15,
+    'contact': 19,
   };
 
   @override
@@ -165,8 +174,10 @@ class _CosmicPainter extends CustomPainter {
         center: const Alignment(0.5, -0.6),
         radius: 1.5,
         colors: [
-          Color.lerp(const Color(0xFF17102B), const Color(0xFFF3F0FF), sunT)!,
-          Color.lerp(const Color(0xFF0B0714), const Color(0xFFEAF2FF), sunT)!,
+          // Dark mode: deep navy/purple space. Light mode: creamy white
+          // with warm orange/red hints instead of a cool, washed-out tint.
+          Color.lerp(const Color(0xFF17102B), const Color(0xFFFFF7EC), sunT)!,
+          Color.lerp(const Color(0xFF0B0714), const Color(0xFFFFE3CE), sunT)!,
         ],
       ).createShader(rect);
     canvas.drawRect(rect, bg);
@@ -182,21 +193,33 @@ class _CosmicPainter extends CustomPainter {
 
     final orangeHaze = Paint()
       ..shader = RadialGradient(colors: [
-        const Color(0xFFB3672E).withOpacity(0.07),
+        Color.lerp(const Color(0xFFB3672E), const Color(0xFFFF7A45), sunT)!.withOpacity(0.10 + sunT * 0.06),
         Colors.transparent,
-      ]).createShader(Rect.fromCircle(center: Offset(size.width * 0.9, size.height * 0.86), radius: maxR * 0.4));
+      ]).createShader(Rect.fromCircle(center: Offset(size.width * 0.9, size.height * 0.86), radius: maxR * 0.45));
     canvas.drawRect(rect, orangeHaze);
 
-    // Sun/black hole drawn first so planets can pass in front of it.
+    // "Flying toward" the destination: a quick, bell-curved zoom anchored
+    // at the point the active planet is heading to, so the whole scene
+    // dollies forward mid-transition and settles back to normal scale.
+    final focusPoint = pivot +
+        Offset(
+          cos(_focusAngle) * maxR * focusRadiusFrac,
+          sin(_focusAngle) * maxR * focusRadiusFrac * 0.55,
+        );
+    final scale = 1.0 + flyT * 0.16;
+    canvas.save();
+    canvas.translate(focusPoint.dx * (1 - scale), focusPoint.dy * (1 - scale));
+    canvas.scale(scale);
+
     final sunPos = _project(pivot, maxR, _sunWorldAngle, _sunRadiusFrac, idlePhase: -1);
     _paintSunOrBlackHole(canvas, sunPos, maxR * _sunRadiusFrac);
 
     for (final key in planetKeys) {
       final worldAngle = kPlanetAngles[key]!;
       final theme = kPlanetThemes[key]!;
-      final radiusFrac = _radiusFrac[key]!;
+      final rFrac = radiusFrac[key]!;
       final planetSize = _planetSize[key]!;
-      final pos = _project(pivot, maxR, worldAngle, radiusFrac, idlePhase: worldAngle);
+      final pos = _project(pivot, maxR, worldAngle, rFrac, idlePhase: worldAngle);
 
       if (theme.hasRing) {
         canvas.save();
@@ -204,25 +227,36 @@ class _CosmicPainter extends CustomPainter {
         canvas.rotate(0.45);
         final ringPaint = Paint()
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.4
-          ..color = theme.color.withOpacity(0.22);
+          ..strokeWidth = 1.6
+          ..color = theme.color.withOpacity(0.4 + sunT * 0.15);
         canvas.drawOval(Rect.fromCenter(center: Offset.zero, width: planetSize * 2.6, height: planetSize * 0.85), ringPaint);
         canvas.restore();
       }
 
+      // Fill opacity/definition scales up in light mode, where a washed
+      // out planet would otherwise vanish into the bright background.
+      final fillOpacity = 0.5 + sunT * 0.28;
       final planetPaint = Paint()
         ..shader = RadialGradient(colors: [
-          theme.color.withOpacity(0.42),
-          theme.color.withOpacity(0.06),
+          theme.color.withOpacity(fillOpacity),
+          theme.color.withOpacity(fillOpacity * 0.4),
         ]).createShader(Rect.fromCircle(center: pos, radius: planetSize));
       canvas.drawCircle(pos, planetSize, planetPaint);
+
+      final strokePaint = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.2
+        ..color = Color.lerp(theme.color, Colors.black, 0.25)!.withOpacity(0.35 + sunT * 0.25);
+      canvas.drawCircle(pos, planetSize, strokePaint);
     }
+
+    canvas.restore();
   }
 
-  Offset _project(Offset pivot, double maxR, double worldAngle, double radiusFrac, {required double idlePhase}) {
+  Offset _project(Offset pivot, double maxR, double worldAngle, double rFrac, {required double idlePhase}) {
     final wobble = sin(idleT * 2 * pi + idlePhase) * 0.035;
     final angle = worldAngle + cameraAngle + wobble;
-    final radius = maxR * radiusFrac;
+    final radius = maxR * rFrac;
     final shear = radius * 0.16;
     return pivot + Offset(cos(angle) * radius - sin(angle) * shear, sin(angle) * radius * 0.55);
   }
@@ -231,7 +265,7 @@ class _CosmicPainter extends CustomPainter {
     final starPaint = Paint();
     for (var i = 0; i < stars.length; i++) {
       final tw = (sin(idleT * 2 * pi * 3 + starPhase[i]) + 1) / 2;
-      starPaint.color = Colors.white.withOpacity((0.05 + tw * 0.10) * (1 - sunT * 0.6));
+      starPaint.color = Colors.white.withOpacity((0.05 + tw * 0.10) * (1 - sunT * 0.75));
       canvas.drawCircle(Offset(stars[i].dx * size.width, stars[i].dy * size.height), 0.8 + tw, starPaint);
     }
   }
@@ -245,7 +279,7 @@ class _CosmicPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = radius * 0.26
       ..shader = SweepGradient(colors: [
-        Color.lerp(const Color(0xFFB3672E), const Color(0xFFFFC876), sunT)!.withOpacity(0.55),
+        Color.lerp(const Color(0xFFB3672E), const Color(0xFFFF7A45), sunT)!.withOpacity(0.55),
         Colors.transparent,
         Color.lerp(const Color(0xFF8B6FD6), const Color(0xFFFF9A56), sunT)!.withOpacity(0.45),
         Colors.transparent,
@@ -267,5 +301,8 @@ class _CosmicPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _CosmicPainter oldDelegate) =>
-      oldDelegate.idleT != idleT || oldDelegate.sunT != sunT || oldDelegate.cameraAngle != cameraAngle;
+      oldDelegate.idleT != idleT ||
+      oldDelegate.sunT != sunT ||
+      oldDelegate.cameraAngle != cameraAngle ||
+      oldDelegate.flyT != flyT;
 }

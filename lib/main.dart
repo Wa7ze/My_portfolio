@@ -11,6 +11,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => ThemeController()),
         ChangeNotifierProvider(create: (_) => LocaleController()),
         ChangeNotifierProvider(create: (_) => SidebarController()),
+        ChangeNotifierProvider(create: (_) => CurrentPageController()),
       ],
       child: const App(),
     ),
