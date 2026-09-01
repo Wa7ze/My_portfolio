@@ -1,6 +1,6 @@
 [build]
   publish = "build/web"
-  command = "git clone https://github.com/flutter/flutter.git -b 3.47.2 --depth 1 flutter-sdk && export PATH=\"$PATH:$(pwd)/flutter-sdk/bin\" && flutter config --enable-web && flutter pub get && flutter build web --release"
+  command = "if [ ! -f flutter-sdk/bin/flutter ]; then rm -rf flutter-sdk && git clone https://github.com/flutter/flutter.git -b 3.47.2 --depth 1 flutter-sdk; fi && export PATH=\"$PATH:$(pwd)/flutter-sdk/bin\" && flutter config --enable-web && flutter pub get && flutter build web --release"
 
 # Hash-based routing (go_router's default, used here) never sends the route
 # path to the server, so this isn't required for correctness — it's just a
