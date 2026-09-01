@@ -71,6 +71,8 @@ abstract class AppStrings {
   String get certificatesSubtitle;
   String get otherCertificatesLabel;
   String get verificationLinkLabel;
+  String get cvSectionTitle;
+  String get cvSectionSubtitle;
 
   // Work
   String get workPageTitle;

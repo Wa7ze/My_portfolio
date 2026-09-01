@@ -6,15 +6,23 @@ import 'package:flutter/physics.dart';
 /// the cosmic background rather than moving in lockstep with the scroll.
 ///
 /// [weight] (0..1) gives each widget its own sense of mass: heavy (near 1)
-/// elements swing further and lag behind, settling slowly like something
-/// large drifting underwater; light (near 0) elements are quick and twitchy.
-/// The offset is bounded and self-corrects toward zero near the viewport
-/// center, so nothing drifts away from its neighbors.
+/// elements lag behind and settle slowly, like something large drifting
+/// underwater; light (near 0) elements are quick and twitchy. The offset is
+/// always clamped to exactly [maxOffset].
+///
+/// [reserveSpace] controls how the "never touch a neighbor" guarantee is
+/// enforced: when true (the default, safe for free-flowing Column/ListView
+/// content) an invisible buffer equal to [maxOffset] is reserved around the
+/// child so it can never paint outside its own slot. Fixed-height grid
+/// cells can't safely donate extra space without squeezing their content,
+/// so pass false there instead and keep [maxOffset] under half the grid's
+/// own spacing — the gap between cells absorbs the movement instead.
 class FloatOnScroll extends StatefulWidget {
   final Widget child;
   final double intensity;
   final double maxOffset;
   final double weight;
+  final bool reserveSpace;
 
   const FloatOnScroll({
     super.key,
@@ -22,6 +30,7 @@ class FloatOnScroll extends StatefulWidget {
     this.intensity = 0.09,
     this.maxOffset = 20,
     this.weight = 0.5,
+    this.reserveSpace = true,
   });
 
   @override
@@ -59,14 +68,13 @@ class _FloatOnScrollState extends State<FloatOnScroll> with SingleTickerProvider
     final viewportHeight = MediaQuery.sizeOf(context).height;
     final dy = box.localToGlobal(Offset.zero).dy;
     final centerDelta = (dy + box.size.height / 2) - viewportHeight / 2;
-    final w = widget.weight.clamp(0.0, 1.0);
-    final amplitude = widget.maxOffset * (0.7 + w * 0.6);
-    final next = (-centerDelta * widget.intensity).clamp(-amplitude, amplitude);
+    final next = (-centerDelta * widget.intensity).clamp(-widget.maxOffset, widget.maxOffset);
     if ((next - _target).abs() < 0.4) return;
     _target = next;
 
     // Heavier widgets get a softer, slower spring (more lag, more overshoot);
     // lighter widgets snap quickly with little overshoot.
+    final w = widget.weight.clamp(0.0, 1.0);
     final mass = 1.0 + w * 5;
     final stiffness = 70.0 - w * 30;
     final damping = 16.0 - w * 4;
@@ -84,10 +92,18 @@ class _FloatOnScrollState extends State<FloatOnScroll> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    return Transform.translate(
+    // Clamp defensively in case a spring overshoot nudges slightly past
+    // maxOffset — the collision guarantee below depends on this holding.
+    final offset = _controller.value.clamp(-widget.maxOffset, widget.maxOffset);
+    final translated = Transform.translate(
       key: _key,
-      offset: Offset(0, _controller.value),
+      offset: Offset(0, offset),
       child: widget.child,
+    );
+    if (!widget.reserveSpace) return translated;
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: widget.maxOffset),
+      child: translated,
     );
   }
 }

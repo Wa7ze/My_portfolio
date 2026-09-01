@@ -27,19 +27,16 @@ class ResponsiveLayout extends StatelessWidget {
           final sidebarWidth = (constraints.maxWidth * 0.85).clamp(0.0, 300.0).toDouble();
           return Stack(
             children: [
-              const Positioned.fill(child: CosmicBackground()),
+              Positioned.fill(child: CosmicBackground(currentPage: currentPage)),
               Positioned.fill(child: child),
+              // Invisible tap-outside-to-close area — no dimming, the rest
+              // of the page stays exactly as bright with the sidebar open.
               Positioned.fill(
                 child: IgnorePointer(
                   ignoring: !isOpen,
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: sidebarController.close,
-                    child: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 250),
-                      opacity: isOpen ? 1 : 0,
-                      child: Container(color: Colors.black54),
-                    ),
                   ),
                 ),
               ),
@@ -86,8 +83,8 @@ class _AnimatedSidebarState extends State<_AnimatedSidebar> with SingleTickerPro
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 420),
-      reverseDuration: const Duration(milliseconds: 320),
+      duration: const Duration(milliseconds: 520),
+      reverseDuration: const Duration(milliseconds: 420),
       value: widget.isOpen ? 1 : 0,
     );
     _slide = CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic, reverseCurve: Curves.easeInCubic);

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../core/planet_theme.dart';
 import '../../core/strings/app_strings.dart';
 import '../../core/theme.dart';
 import '../../widgets/centered_content.dart';
+import '../../widgets/cv_section.dart';
 import '../../widgets/float_on_scroll.dart';
 import '../../widgets/responsive_layout.dart';
 
@@ -53,7 +55,8 @@ class _ContactPageState extends State<ContactPage> {
                         FloatOnScroll(
                           intensity: 0.09,
                           weight: 0.4,
-                          maxOffset: 16,
+                          maxOffset: 6,
+                          reserveSpace: false,
                           child: _buildContactBox(
                             context,
                             icon: Icons.email,
@@ -65,7 +68,8 @@ class _ContactPageState extends State<ContactPage> {
                         FloatOnScroll(
                           intensity: 0.09,
                           weight: 0.4,
-                          maxOffset: 16,
+                          maxOffset: 6,
+                          reserveSpace: false,
                           child: _buildContactBox(
                             context,
                             icon: Icons.phone,
@@ -77,7 +81,8 @@ class _ContactPageState extends State<ContactPage> {
                         FloatOnScroll(
                           intensity: 0.09,
                           weight: 0.4,
-                          maxOffset: 16,
+                          maxOffset: 6,
+                          reserveSpace: false,
                           child: _buildContactBox(
                             context,
                             icon: Icons.work,
@@ -89,7 +94,8 @@ class _ContactPageState extends State<ContactPage> {
                         FloatOnScroll(
                           intensity: 0.09,
                           weight: 0.4,
-                          maxOffset: 16,
+                          maxOffset: 6,
+                          reserveSpace: false,
                           child: _buildContactBox(
                             context,
                             icon: Icons.code,
@@ -103,22 +109,7 @@ class _ContactPageState extends State<ContactPage> {
                   },
                 ),
                 const SizedBox(height: 48),
-                Text(strings.downloadCvTitle, style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w800))
-                    .animate(delay: 600.ms)
-                    .fadeIn(duration: 600.ms)
-                    .slideY(begin: 0.1),
-                const SizedBox(height: 16),
-                Center(
-                  child: FilledButton.icon(
-                    onPressed: () => _downloadCV(),
-                    icon: const Icon(Icons.download),
-                    label: Text(strings.downloadCvButton),
-                    style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                      textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
-                  ).animate(delay: 700.ms).fadeIn(duration: 600.ms).slideY(begin: 0.1),
-                ),
+                const CvSection(),
                 const SizedBox(height: 48),
               ],
             ),
@@ -154,10 +145,10 @@ class _ContactPageState extends State<ContactPage> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.primary.withOpacity(0.1),
+                    color: kPlanetThemes['contact']!.color.withOpacity(0.14),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(icon, color: theme.colorScheme.primary, size: 24),
+                  child: Icon(icon, color: kPlanetThemes['contact']!.color, size: 24),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -167,7 +158,7 @@ class _ContactPageState extends State<ContactPage> {
                     children: [
                       Text(title, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
                       const SizedBox(height: 4),
-                      Text(subtitle, style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary, fontWeight: FontWeight.w500)),
+                      Text(subtitle, style: theme.textTheme.bodyMedium?.copyWith(color: kPlanetThemes['contact']!.color, fontWeight: FontWeight.w500)),
                     ],
                   ),
                 ),
@@ -217,25 +208,4 @@ class _ContactPageState extends State<ContactPage> {
     }
   }
 
-  Future<void> _downloadCV() async {
-    try {
-      final url = Uri.parse('assets/files/Mazen_Matran_CV.pdf');
-      if (await canLaunchUrl(url)) {
-        await launchUrl(url, mode: LaunchMode.externalApplication);
-      } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("CV will open in a new tab. If it doesn't, please check your browser settings."),
-            duration: Duration(seconds: 3),
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error opening CV: $e'), backgroundColor: Colors.red),
-        );
-      }
-    }
-  }
 }

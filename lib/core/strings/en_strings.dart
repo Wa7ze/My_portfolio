@@ -117,6 +117,10 @@ class EnStrings extends AppStrings {
   String get otherCertificatesLabel => 'Courses & Internships';
   @override
   String get verificationLinkLabel => 'Open Verification Link';
+  @override
+  String get cvSectionTitle => 'CV';
+  @override
+  String get cvSectionSubtitle => 'Tap the preview to view it full-size, or download the PDF.';
 
   @override
   String get workPageTitle => 'My Work';

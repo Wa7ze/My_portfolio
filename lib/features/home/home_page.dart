@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/strings/app_strings.dart';
 import '../../widgets/centered_content.dart';
+import '../../widgets/cv_section.dart';
 import '../../widgets/float_on_scroll.dart';
 import '../../widgets/responsive_layout.dart';
 
@@ -83,7 +84,7 @@ class HomePage extends StatelessWidget {
                 child: FloatOnScroll(
                   intensity: 0.09,
                   weight: 0.8,
-                  maxOffset: 24,
+                  maxOffset: 18,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -109,6 +110,10 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 0, 24, 56),
+              child: CenteredContent(child: const CvSection()),
             ),
           ],
         ),

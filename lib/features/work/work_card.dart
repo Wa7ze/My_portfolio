@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/planet_theme.dart';
 import '../../core/theme.dart';
 import 'work_data.dart';
 
@@ -56,7 +57,6 @@ class _WorkCardState extends State<WorkCard> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return MouseRegion(
       onEnter: (_) => _onHover(true),
       onExit: (_) => _onHover(false),
@@ -146,7 +146,7 @@ class _WorkCardState extends State<WorkCard> with SingleTickerProviderStateMixin
                       if (_hover)
                         Container(
                           decoration: BoxDecoration(
-                            color: theme.colorScheme.primary.withOpacity(0.12),
+                            color: kPlanetThemes['work']!.color.withOpacity(0.14),
                             borderRadius: BorderRadius.circular(20),
                           ),
                         ),

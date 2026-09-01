@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/strings/app_strings.dart';
 import '../../core/theme.dart';
 import '../../widgets/centered_content.dart';
+import '../../widgets/cv_section.dart';
 import '../../widgets/float_on_scroll.dart';
 import '../../widgets/responsive_layout.dart';
 import 'work_card.dart';
@@ -56,13 +57,16 @@ class WorkPage extends StatelessWidget {
                       itemBuilder: (_, i) => FloatOnScroll(
                         intensity: 0.10,
                         weight: 0.85,
-                        maxOffset: 26,
+                        maxOffset: 8,
+                        reserveSpace: false,
                         child: WorkCard(item: workItems[i]).animate(delay: (200 + i * 100).ms).fadeIn(duration: 600.ms).slideY(begin: 0.1),
                       ),
                     );
                   },
                 ),
-                const SizedBox(height: 36),
+                const SizedBox(height: 48),
+                const CvSection(),
+                const SizedBox(height: 48),
               ],
             ),
           ),

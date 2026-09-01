@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../core/planet_theme.dart';
 import '../../core/strings/app_strings.dart';
 import '../../core/theme.dart';
 import '../../widgets/centered_content.dart';
+import '../../widgets/cv_section.dart';
 import '../../widgets/float_on_scroll.dart';
 import '../../widgets/responsive_layout.dart';
 import 'certificate_data.dart';
@@ -15,6 +17,7 @@ class AboutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final strings = context.strings;
     final theme = Theme.of(context);
+    final aboutAccent = kPlanetThemes['about']!.color;
 
     return ResponsiveLayout(
       currentPage: 'about',
@@ -44,7 +47,7 @@ class AboutPage extends StatelessWidget {
                 FloatOnScroll(
                   intensity: 0.09,
                   weight: 0.85,
-                  maxOffset: 26,
+                  maxOffset: 20,
                   child: _Section(
                     title: strings.summaryTitle,
                     delay: 150,
@@ -59,7 +62,7 @@ class AboutPage extends StatelessWidget {
                 FloatOnScroll(
                   intensity: 0.09,
                   weight: 0.85,
-                  maxOffset: 26,
+                  maxOffset: 20,
                   child: _Section(
                     title: strings.experienceTitle,
                     delay: 250,
@@ -71,7 +74,7 @@ class AboutPage extends StatelessWidget {
                           spacing: 12,
                           runSpacing: 4,
                           children: [
-                            Text(strings.experienceRole, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700, color: theme.colorScheme.primary)),
+                            Text(strings.experienceRole, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700, color: aboutAccent)),
                             Text(strings.experienceCompany, style: theme.textTheme.bodyMedium?.copyWith(color: context.palette.mutedText)),
                             Text(strings.experiencePeriod, style: theme.textTheme.bodySmall?.copyWith(color: context.palette.mutedText, fontWeight: FontWeight.w600)),
                           ],
@@ -95,7 +98,7 @@ class AboutPage extends StatelessWidget {
                     final educationCard = FloatOnScroll(
                       intensity: 0.09,
                       weight: 0.8,
-                      maxOffset: 24,
+                      maxOffset: 18,
                       child: _Section(
                         title: strings.educationTitle,
                         delay: 350,
@@ -113,7 +116,7 @@ class AboutPage extends StatelessWidget {
                     final skillsCard = FloatOnScroll(
                       intensity: 0.09,
                       weight: 0.8,
-                      maxOffset: 24,
+                      maxOffset: 18,
                       child: _Section(
                         title: strings.skillsTitle,
                         delay: 400,
@@ -121,7 +124,7 @@ class AboutPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             for (final group in strings.skillGroups.entries) ...[
-                              Text(group.key, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700, color: theme.colorScheme.primary)),
+                              Text(group.key, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700, color: aboutAccent)),
                               const SizedBox(height: 8),
                               Wrap(
                                 spacing: 8,
@@ -151,7 +154,7 @@ class AboutPage extends StatelessWidget {
                 FloatOnScroll(
                   intensity: 0.09,
                   weight: 0.7,
-                  maxOffset: 22,
+                  maxOffset: 16,
                   child: _Section(
                     title: strings.languagesTitle,
                     delay: 450,
@@ -199,6 +202,8 @@ class AboutPage extends StatelessWidget {
                 ).animate(delay: 650.ms).fadeIn(duration: 500.ms),
                 const SizedBox(height: 28),
                 _CertificateGrid(items: certificates, delayBase: 700),
+                const SizedBox(height: 48),
+                const CvSection(),
                 const SizedBox(height: 48),
               ],
             ),
@@ -253,7 +258,7 @@ class _BulletLine extends StatelessWidget {
           child: Container(
             width: 6,
             height: 6,
-            decoration: BoxDecoration(color: theme.colorScheme.primary, shape: BoxShape.circle),
+            decoration: BoxDecoration(color: kPlanetThemes['about']!.color, shape: BoxShape.circle),
           ),
         ),
         const SizedBox(width: 12),
@@ -273,7 +278,7 @@ class _EducationTile extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(entry.degree, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: theme.colorScheme.primary)),
+        Text(entry.degree, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: kPlanetThemes['about']!.color)),
         Text(entry.field, style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500)),
         Text(entry.school, style: theme.textTheme.bodyMedium?.copyWith(color: context.palette.mutedText)),
         Row(
@@ -334,7 +339,8 @@ class _CertificateGrid extends StatelessWidget {
           itemBuilder: (_, i) => FloatOnScroll(
             intensity: 0.08,
             weight: 0.2,
-            maxOffset: 12,
+            maxOffset: 6,
+            reserveSpace: false,
             child: _CertificateCard(data: items[i])
                 .animate(delay: (delayBase + i * 80).ms)
                 .fadeIn(duration: 500.ms)

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../core/planet_theme.dart';
 import '../../core/strings/app_strings.dart';
 import '../../core/theme.dart';
 import '../../widgets/centered_content.dart';
+import '../../widgets/cv_section.dart';
 import '../../widgets/float_on_scroll.dart';
 import '../../widgets/responsive_layout.dart';
 import 'work_data.dart';
@@ -62,13 +64,13 @@ class ProjectPage extends StatelessWidget {
                     .map((tag) => Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: theme.colorScheme.primary.withOpacity(0.1),
+                            color: kPlanetThemes['work']!.color.withOpacity(0.12),
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: theme.colorScheme.primary.withOpacity(0.3)),
+                            border: Border.all(color: kPlanetThemes['work']!.color.withOpacity(0.35)),
                           ),
                           child: Text(
                             tag,
-                            style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.primary, fontWeight: FontWeight.w500),
+                            style: theme.textTheme.bodySmall?.copyWith(color: kPlanetThemes['work']!.color, fontWeight: FontWeight.w500),
                           ),
                         ))
                     .toList(),
@@ -81,7 +83,7 @@ class ProjectPage extends StatelessWidget {
           FloatOnScroll(
             intensity: 0.10,
             weight: 0.8,
-            maxOffset: 24,
+            maxOffset: 18,
             child: Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
@@ -143,7 +145,8 @@ class ProjectPage extends StatelessWidget {
                     return FloatOnScroll(
                       intensity: 0.08,
                       weight: 0.5,
-                      maxOffset: 18,
+                      maxOffset: 6,
+                      reserveSpace: false,
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
@@ -191,6 +194,8 @@ class ProjectPage extends StatelessWidget {
             ),
           ).animate(delay: 800.ms).fadeIn(duration: 600.ms).scale(begin: const Offset(0.8, 0.8)),
 
+          const SizedBox(height: 48),
+          const CvSection(),
           const SizedBox(height: 48),
               ],
             ),

@@ -118,6 +118,10 @@ class ArStrings extends AppStrings {
   String get otherCertificatesLabel => 'الدورات والتدريبات';
   @override
   String get verificationLinkLabel => 'فتح رابط التحقق';
+  @override
+  String get cvSectionTitle => 'السيرة الذاتية';
+  @override
+  String get cvSectionSubtitle => 'اضغط على المعاينة لعرضها بالحجم الكامل، أو نزّل ملف PDF.';
 
   @override
   String get workPageTitle => 'أعمالي';

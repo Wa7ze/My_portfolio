@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../core/app_state.dart';
+import '../core/planet_theme.dart';
 import '../core/strings/app_strings.dart';
 
 class LeftSidebar extends StatelessWidget {
@@ -55,10 +56,10 @@ class LeftSidebar extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _NavItem(label: strings.navHome, isActive: currentPage == 'home', onTap: () => navigate('/')),
-                  _NavItem(label: strings.navAbout, isActive: currentPage == 'about', onTap: () => navigate('/about')),
-                  _NavItem(label: strings.navWork, isActive: currentPage == 'work', onTap: () => navigate('/work')),
-                  _NavItem(label: strings.navContact, isActive: currentPage == 'contact', onTap: () => navigate('/contact')),
+                  _NavItem(label: strings.navHome, planetKey: 'home', isActive: currentPage == 'home', onTap: () => navigate('/')),
+                  _NavItem(label: strings.navAbout, planetKey: 'about', isActive: currentPage == 'about', onTap: () => navigate('/about')),
+                  _NavItem(label: strings.navWork, planetKey: 'work', isActive: currentPage == 'work', onTap: () => navigate('/work')),
+                  _NavItem(label: strings.navContact, planetKey: 'contact', isActive: currentPage == 'contact', onTap: () => navigate('/contact')),
                 ],
               ),
             ),
@@ -162,10 +163,11 @@ class _LanguagePill extends StatelessWidget {
 
 class _NavItem extends StatefulWidget {
   final String label;
+  final String planetKey;
   final VoidCallback onTap;
   final bool isActive;
 
-  const _NavItem({required this.label, required this.onTap, required this.isActive});
+  const _NavItem({required this.label, required this.planetKey, required this.onTap, required this.isActive});
 
   @override
   State<_NavItem> createState() => _NavItemState();
@@ -177,6 +179,8 @@ class _NavItemState extends State<_NavItem> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final planet = kPlanetThemes[widget.planetKey]!;
+    final accent = planet.color;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _isHovered = true),
@@ -190,22 +194,75 @@ class _NavItemState extends State<_NavItem> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             color: widget.isActive
-                ? theme.colorScheme.primary.withOpacity(0.15)
+                ? accent.withOpacity(0.15)
                 : _isHovered
                     ? theme.colorScheme.onSurface.withOpacity(0.06)
                     : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
-            border: widget.isActive ? Border.all(color: theme.colorScheme.primary.withOpacity(0.4)) : null,
+            border: widget.isActive ? Border.all(color: accent.withOpacity(0.45)) : null,
           ),
-          child: Text(
-            widget.label,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontWeight: widget.isActive ? FontWeight.w700 : FontWeight.w500,
-              color: widget.isActive ? theme.colorScheme.primary : theme.colorScheme.onSurface,
-            ),
+          child: Row(
+            children: [
+              _PlanetDot(color: accent, hasRing: planet.hasRing),
+              const SizedBox(width: 10),
+              Text(
+                widget.label,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: widget.isActive ? FontWeight.w700 : FontWeight.w500,
+                  color: widget.isActive ? accent : theme.colorScheme.onSurface,
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
+}
+
+/// Small planet symbol next to each nav item, matching the planet assigned
+/// to that page in the cosmic background.
+class _PlanetDot extends StatelessWidget {
+  final Color color;
+  final bool hasRing;
+  const _PlanetDot({required this.color, required this.hasRing});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 16,
+      height: 16,
+      child: CustomPaint(painter: _PlanetDotPainter(color: color, hasRing: hasRing)),
+    );
+  }
+}
+
+class _PlanetDotPainter extends CustomPainter {
+  final Color color;
+  final bool hasRing;
+  _PlanetDotPainter({required this.color, required this.hasRing});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = size.center(Offset.zero);
+    if (hasRing) {
+      final ringPaint = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.2
+        ..color = color.withOpacity(0.7);
+      canvas.save();
+      canvas.translate(center.dx, center.dy);
+      canvas.rotate(0.5);
+      canvas.drawOval(Rect.fromCenter(center: Offset.zero, width: size.width * 1.15, height: size.height * 0.42), ringPaint);
+      canvas.restore();
+    }
+    final corePaint = Paint()
+      ..shader = RadialGradient(colors: [color, color.withOpacity(0.55)])
+          .createShader(Rect.fromCircle(center: center, radius: size.width * 0.34));
+    canvas.drawCircle(center, size.width * 0.34, corePaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _PlanetDotPainter oldDelegate) =>
+      oldDelegate.color != color || oldDelegate.hasRing != hasRing;
 }
